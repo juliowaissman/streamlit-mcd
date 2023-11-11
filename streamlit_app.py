@@ -11,7 +11,7 @@ st.set_page_config(
 )
 st.sidebar.header("Admisión MCD")
 
-st.subheader('Es dificil entrar a la Maestría en Ciencia de Datos?')
+st.subheader('¿Es dificil entrar a la Maestría en Ciencia de Datos?')
 st.divider()
 
 df_resumen = pd.read_excel(
