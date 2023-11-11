@@ -1,40 +1,108 @@
-import altair as alt
+
 import numpy as np
 import pandas as pd
+import plotly.express as px
 import streamlit as st
 
-"""
-# Welcome to Streamlit!
+st.set_page_config(
+    page_title="Admisión MCD", 
+    page_icon="😵‍💫", 
+    initial_sidebar_state="collapsed" 
+)
+st.sidebar.header("Admisión MCD")
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:.
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+st.subheader('Es dificil entrar a la Maestría en Ciencia de Datos?')
+st.divider()
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+df_resumen = pd.read_excel(
+    'data/Estadisticas-MCD.xlsx', 
+    sheet_name='Aspirantes',
+    header=3
+)
 
-num_points = st.slider("Number of points in spiral", 1, 10000, 1100)
-num_turns = st.slider("Number of turns in spiral", 1, 300, 31)
+c1, c2, c3 = st.columns(3)
+with c1:
+    st.metric(
+        label="Aspirantes totales", 
+        value= df_resumen['Num. Aspirantes'].sum(), 
+        help="Acumulado de aspirantes del 2020, 2021, 2022 y 2023"
+    )
+with c2:
+    st.metric(
+        label="Aceptados", 
+        value= (df_resumen['Aceptados nacional'].sum() + 
+                df_resumen['Aceptado extranjero'].sum()), 
+        help="Acumulado de aspirantes aceptados del 2020, 2021, 2022 y 2023"  
+    )
+with c3:
+    st.metric(
+        label="Aspirantes extranjeros", 
+        value= df_resumen['Extranjeros'].sum(), 
+        help="Acumulado de aspirantes extranjeros del 2020, 2021, 2022 y 2023"  
+    )
 
-indices = np.linspace(0, 1, num_points)
-theta = 2 * np.pi * num_turns * indices
-radius = indices
+st.divider()
 
-x = radius * np.cos(theta)
-y = radius * np.sin(theta)
+df_resumen['Aceptados'] = (
+    df_resumen['Aceptados nacional'] + df_resumen['Aceptado extranjero']
+)
 
-df = pd.DataFrame({
-    "x": x,
-    "y": y,
-    "idx": indices,
-    "rand": np.random.randn(num_points),
-})
+st.markdown("#### Aceptados por generación")
+st.caption("Del resumen generado por el Sistema de Información de Posgrados (SIPO) de la Unison")
+st.bar_chart(
+    data=df_resumen, 
+    x='Convocatoria', 
+    y=['No aceptados', 'Aceptados']
+)
 
-st.altair_chart(alt.Chart(df, height=700, width=700)
-    .mark_point(filled=True)
-    .encode(
-        x=alt.X("x", axis=None),
-        y=alt.Y("y", axis=None),
-        color=alt.Color("idx", legend=None, scale=alt.Scale()),
-        size=alt.Size("rand", legend=None, scale=alt.Scale(range=[1, 150])),
-    ))
+st.button('¡Que felicidad!', on_click=st.balloons)
+
+st.divider()
+
+
+st.markdown("#### Y vamos ganando internacionalización")
+
+df_resumen['No aceptado extranjero'] = (
+    df_resumen['Extranjeros'] - df_resumen['Aceptado extranjero']
+)
+
+tab1, tab2, tab3 = st.tabs(["Bar", "Area", "Ploty"])
+
+with tab1:
+    st.markdown("#### Evolución de la demanda internacional por convocatoria")
+    st.caption("Del resumen generado por el Sistema de Información de Posgrados (SIPO) de la Unison")
+    st.bar_chart(
+        data=df_resumen, 
+        x='Convocatoria', 
+        y=['No aceptado extranjero', 'Aceptado extranjero']
+    )
+
+with tab2:
+    st.markdown("#### Evolución de la demanda internacional por convocatoria")
+    st.caption("Del resumen generado por el Sistema de Información de Posgrados (SIPO) de la Unison")
+    st.area_chart(
+        data=df_resumen, 
+        x='Convocatoria', 
+        y=['No aceptado extranjero', 'Aceptado extranjero']
+    )
+
+with tab3:
+    st.plotly_chart(
+        px.bar(
+            df_resumen, 
+            x='Convocatoria', 
+            y=['No aceptado extranjero', 'Aceptado extranjero'],
+            title="Evolución de la demanda internacional por convocatoria"
+        )
+    )
+    st.caption("Del resumen generado por el Sistema de Información de Posgrados (SIPO) de la Unison")
+
+df = df_resumen[[
+    'Convocatoria','Num. Aspirantes', 'Extranjeros',
+    'Aceptados', 'Aceptados nacional', 'Aceptado extranjero',
+    'No aceptados', 'No aceptado extranjero'
+]].set_index('Convocatoria')
+
+with st.expander("Ver los datos tabulares"):
+    st.dataframe(df)
+    
