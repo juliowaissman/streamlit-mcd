@@ -18,6 +18,7 @@ option = st.selectbox(
     'Escoje la convocatoria',
     ('2020', '2021', '2022', '2023', '2024'))
 
+
 df = pd.read_excel(
     'data/aspirantes_' + option + '.xlsx', 
 )
