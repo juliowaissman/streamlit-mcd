@@ -25,20 +25,20 @@ with c1:
     st.metric(
         label="Aspirantes totales", 
         value= df_resumen['Num. Aspirantes'].sum(), 
-        help="Acumulado de aspirantes del 2020, 2021, 2022 y 2023"
+        help="Acumulado de aspirantes del 2020, 2021, 2022, 2023 y 2024"
     )
 with c2:
     st.metric(
         label="Aceptados", 
         value= (df_resumen['Aceptados nacional'].sum() + 
                 df_resumen['Aceptado extranjero'].sum()), 
-        help="Acumulado de aspirantes aceptados del 2020, 2021, 2022 y 2023"  
+        help="Acumulado de aspirantes aceptados del 2020 al 2024"  
     )
 with c3:
     st.metric(
         label="Aspirantes extranjeros", 
         value= df_resumen['Extranjeros'].sum(), 
-        help="Acumulado de aspirantes extranjeros del 2020, 2021, 2022 y 2023"  
+        help="Acumulado de aspirantes extranjeros del 2020 al 2023"  
     )
 
 st.divider()

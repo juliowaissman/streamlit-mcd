@@ -11,12 +11,12 @@ st.set_page_config(
 st.sidebar.header("Inspección de datos")
 
 st.subheader('Vamos a inspeccionar datos por convocatoria')
-st.markdown("usando [`streamlit-aggrid`](https://github.com/PablocFonseca/streamlit-aggrid)")
+st.markdown("**usando [`streamlit-aggrid`](https://github.com/PablocFonseca/streamlit-aggrid)**")
 st.divider()
 
 option = st.selectbox(
     'Escoje la convocatoria',
-    ('2020', '2021', '2022', '2023'))
+    ('2020', '2021', '2022', '2023', '2024'))
 
 df = pd.read_excel(
     'data/aspirantes_' + option + '.xlsx', 
